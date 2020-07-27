@@ -27,7 +27,9 @@ namespace webapitutorial.Controllers
         {
             var commandItems = _repository.GetAllCommands();
 
-            return Ok(_mapper.Map<IEnumerable<CommandReadDto>>(commandItems));
+            var mappedValue = _mapper.Map<IEnumerable<CommandReadDto>>(commandItems);
+
+            return Ok(mappedValue);
         }
 
         //GET api/commands/{id}
