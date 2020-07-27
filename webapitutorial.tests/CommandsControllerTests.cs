@@ -374,6 +374,7 @@ namespace webapitutorial.tests
         [Fact]
         public void DeleteCommandItem_ObjectCountNotDecremented_WhenValidObjectID()
         {
+            //Test Stuff
             //Arrange
             var command = new Command
             {
