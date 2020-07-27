@@ -32,6 +32,7 @@ steps:
     msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+
 - task: DotNetCoreCLI@2
   displayName: 'dotnet test'
   inputs:
@@ -39,7 +40,13 @@ steps:
     projects: '**/*tests/*.csproj'
     testRunTitle: 'xUNit Test Run'
 
-- task: VSTest@2
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet publish'
   inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    command: publish
+    publishWebProjects: false
+    projects: 'webapitutorial/*.csproj'
+    arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'publish artifacts'
