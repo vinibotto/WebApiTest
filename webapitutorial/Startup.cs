@@ -1,14 +1,15 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using webapitutorial.Data;
 using Newtonsoft.Json.Serialization;
 using Npgsql;
+using System;
+using webapitutorial.Data;
 
 namespace webapitutorial
 {
@@ -32,6 +33,14 @@ namespace webapitutorial
             builder.Password = Configuration["Password"];
 
             services.AddDbContext<CommanderContext>(opt => opt.UseNpgsql(builder.ConnectionString));
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+             .AddJwtBearer(opt =>
+             {
+                 opt.Audience = Configuration["ResourceId"];
+                 opt.Authority = $"{Configuration["Instance"]}{Configuration["TenantId"]}";
+             });
+
 
             services.AddControllers().AddNewtonsoftJson(n => {
                 n.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
@@ -64,6 +73,8 @@ namespace webapitutorial
 
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
